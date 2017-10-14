@@ -35,7 +35,7 @@
 
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
-			<div class="container">        
+			<div class="container">
 				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -43,12 +43,16 @@
 				</a>
 
 				<div class="nav-collapse collapse">
-					<a href="https://github.com/safesoftware/twitter-streaming-nodejs" class="btn">
-						<img src="libs/github-logo.png"> Fork GitHub
-					</a>
-					<a href="https://github.com/safesoftware/twitter-streaming-nodejs/archive/master.zip" class="btn">
-						<i class="icon-download-alt"></i> Download Zip
-					</a>
+					<form id="tableForm" action="/getJson" method="get">
+						<select data-style="btn-info" name="selectpicker" class="selectbutton" id="selectpicker">
+							<optgroup label="select keyword">
+								<option name="table1" value="weather">weather</option>
+								<option name="table2" value="football">football</option>
+								<option name="table3" value="bed">bed</option>
+							</optgroup>
+						</select>
+						<input type="submit" id="button">
+					</form>
 				</div>
 			</div>
 		</div>

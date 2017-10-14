@@ -1,10 +1,12 @@
 //Setup web server and socket
 var twitter = require('twitter'),
     express = require('express'),
+    bodyParser = require('body-parser'),
     app = express(),
     http = require('http'),
     server = http.createServer(app),
     io = require('socket.io').listen(server);
+
 
 //Setup twitter stream api
 var twit = new twitter({
@@ -18,8 +20,20 @@ stream = null;
 //Use the default port (for beanstalk) or default to 8081 locally
 server.listen(process.env.PORT || 8081);
 
-//Setup rotuing for app
+//Setup routing for app
 app.use(express.static(__dirname + '/public'));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
+var key_word='';
+app.get('/getJson', function (req, res) {
+    key_word=req.query["selectpicker"];
+    console.log(key_word);
+});
 
 //Create web sockets connection.
 io.sockets.on('connection', function (socket) {
@@ -28,7 +42,7 @@ io.sockets.on('connection', function (socket) {
 
     if(stream === null) {
       //Connect to twitter stream passing in filter for entire world.
-      twit.stream('statuses/filter', {'locations':'-180,-90,180,90'}, function(stream) {
+      twit.stream('statuses/filter', {locations:'-180,-90,180,90'}, function(stream) {
           stream.on('data', function(data) {
               // Does the JSON result have coordinates
               if (data.coordinates){
@@ -40,6 +54,7 @@ io.sockets.on('connection', function (socket) {
 
                   //Send out to web sockets channel.
                   socket.emit('twitter-stream', outputPoint);
+
                 }
                 else if(data.place){
                   if(data.place.bounding_box === 'Polygon'){
