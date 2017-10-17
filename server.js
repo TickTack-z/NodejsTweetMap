@@ -5,6 +5,7 @@ var twitter = require('twit'),
     http = require('http'),
     server = http.createServer(app),
     io = require('socket.io').listen(server);
+var request=require('request');
 
 //Setup twitter stream api
 var twit = new twitter({
@@ -21,15 +22,21 @@ server.listen(process.env.PORT || 8081);
 app.use(express.static(__dirname + '/public'));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-var stream=twit.stream('statuses/filter', {track:['love','football'],language:'en',location:'-180,-90,180,90'});
+var stream=twit.stream('statuses/filter', {track:['love','football',"food"],language:'en',location:'-180,-90,180,90'});
+var key_word="love";
 app.get('/getJson', function (req, res) {
-        key_word=req.query["selectpicker"];
-        console.log(key_word);
+    key_word=req.query["selectpicker"];
+    console.log(key_word);
+    request('https://search-map-7uq7g47ycnptvveydkyp4lsuca.us-east-1.es.amazonaws.com/twitter/', function (error, response, body) {
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print json
+    });
 });
 
 io.sockets.on('connection', function (socket) {
@@ -37,12 +44,12 @@ io.sockets.on('connection', function (socket) {
     stream.on('tweet', function(data) {
         if (data.coordinates){
             if (data.coordinates !== null){
+                console.log(key_word);
                 console.log(data.text);
                 socket.emit('twitter-stream', data);
             }
         }
     });
-
     stream.on('error', function(error) {
         throw error;
     });

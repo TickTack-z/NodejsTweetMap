@@ -43,13 +43,18 @@ function initialize() {
 
     var marker, circle;
     map.addListener('click', function (event) {
-        addMarker(event.latLng);
+        addCircle(event.latLng);
         //clear old markers and show new markers
+        for (var i = 0; i < markers_inst_list.length; i++) {
+            markers_inst_list[i].setMap(null);
+        }
+        markers_inst_list.length = 0;
+
         //need some code here
 
     });
 
-    function addMarker(location) {
+    function addCircle(location) {
         if (marker) {
             marker.setMap(null);
         }
@@ -66,14 +71,13 @@ function initialize() {
             fillColor: '#AA0000'
         });
         circle.bindTo('center', marker, 'position');
+        if (marker) {
+            marker.setMap(null);
+        }
     }
 
     markers_inst_list = [];
     var markers = [['London Eye, London', 51.503454, -0.119562], ['Palace of Westminster, London', 51.499633, -0.124755]];
-    var infoWindowContent = [
-        ['London Eye, London'],
-        ['Palace of Westminster, London']
-    ];
     var infoWindow = new google.maps.InfoWindow(),
         i;
 
@@ -86,12 +90,12 @@ function initialize() {
         }));
 
         // Allow each marker to have an info window
-        google.maps.event.addListener(markers_inst_list[markers_inst_list.length - 1], 'click', (function (marker, i) {
+        google.maps.event.addListener(markers_inst_list[i], 'click', (function (marker, i) {
             return function () {
                 infoWindow.setContent(markers[i][0]);
                 infoWindow.open(map, marker);
             }
-        })(marker, i));
+        })(markers_inst_list[i], i));
     }
 
     document.getElementById("button").addEventListener("click", function () {
@@ -117,10 +121,9 @@ function initialize() {
             google.maps.event.addListener(markers_inst_list[markers_inst_list.length - 1], 'click', (function (marker, i) {
                 return function () {
                     infoWindow.setContent(data.text);
-                    infowindow.setPosition(marker.getPosition());
                     infoWindow.open(map, marker);
                 }
-            })(marker, i));
+            })(markers_inst_list[markers_inst_list.length - 1], i));
 
             setTimeout(function () {
                 marker.setMap(null);
