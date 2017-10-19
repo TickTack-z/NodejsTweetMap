@@ -42,17 +42,6 @@ function initialize() {
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
     var marker, circle;
-    map.addListener('click', function (event) {
-        addCircle(event.latLng);
-        //clear old markers and show new markers
-        for (var i = 0; i < markers_inst_list.length; i++) {
-            markers_inst_list[i].setMap(null);
-        }
-        markers_inst_list.length = 0;
-
-        //need some code here
-
-    });
 
     function addCircle(location) {
         if (marker) {
@@ -107,32 +96,66 @@ function initialize() {
 
     if (io !== undefined) {
         var socket = io.connect('/');
-        // This listens on the "twitter-steam" channel and data is
-        // received everytime a new tweet is receieved.
-        socket.on('twitter-stream', function (data) {
-            var tweetLocation = {lat: data.coordinates.coordinates[1], lng: data.coordinates.coordinates[0]};
+        document.getElementById("button").addEventListener("click", function () {
+            if (circle) {
+                circle.setMap(null);
+            }
+            if (pointLatLng){
+                pointLatLng=(function () { return; })();
+            }
+            var e=document.getElementById("selectpicker");
+            socket.emit('clicked',e.value);
+        });
+        var pointLatLng;
+        map.addListener('click', function (event) {
+            pointLatLng=event.latLng;
+            addCircle(event.latLng);
+            //clear old markers and show new markers
+            for (var i = 0; i < markers_inst_list.length; i++) {
+                markers_inst_list[i].setMap(null);
+            }
+            markers_inst_list.length = 0;
 
-            markers_inst_list.push(new google.maps.Marker({
-                position: tweetLocation,
-                map: map,
-                title: data.text
-            }));
+            //need some code here
+            socket.emit("distance", event.latLng);
 
-            google.maps.event.addListener(markers_inst_list[markers_inst_list.length - 1], 'click', (function (marker, i) {
-                return function () {
-                    infoWindow.setContent(data.text);
-                    infoWindow.open(map, marker);
-                }
-            })(markers_inst_list[markers_inst_list.length - 1], i));
+        });
+        socket.on('twitter-stream', function (datas) {
+            var data;
+            for (var j=0; j < datas.length; j++)
+            {
+                data=datas[j];
+                var tweetLocation = {lat: data[2], lng: data[1]};
+
+                markers_inst_list.push(new google.maps.Marker({
+                    position: tweetLocation,
+                    map: map,
+                    title: data[0]
+                }));
+
+                google.maps.event.addListener(markers_inst_list[j], 'click', (function (marker, j) {
+                    return function () {
+                        infoWindow.setContent(datas[j][0]);
+                        infoWindow.open(map, marker);
+                    }
+                })(markers_inst_list[j], j));
+            }
+
 
             setTimeout(function () {
                 marker.setMap(null);
             }, 600);
         });
+        setInterval(function () {
+            if (circle){
+                //code here
+            }
+            else {
+                //code here
+            }
 
-        socket.on("connected", function (r) {
-            socket.emit("start tweets");
-        });
+        },3000);
+
     }
 }
 
