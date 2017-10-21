@@ -10,6 +10,7 @@
     "body-parser": "^1.18.2",
     "express": "*",
     "socket.io": "*",
-    "twitter": "*"
+    "twitter": "*",
+    "elasticsearch": "*"
   }
 }

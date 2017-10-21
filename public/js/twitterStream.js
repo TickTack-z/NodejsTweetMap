@@ -42,8 +42,7 @@ function initialize() {
 
     var marker, circle, point_loc;
     markers_inst_list = [];
-    var infoWindow = new google.maps.InfoWindow(),
-        i;
+    var infoWindow = new google.maps.InfoWindow();
 
     function addCircle(location) {
         if (marker) {
@@ -59,8 +58,9 @@ function initialize() {
         });
         circle = new google.maps.Circle({
             map: map,
-            radius: 160930 *1.3,    // 1000 miles in metres
+            radius: 160930 * 1.3,    // 1000 miles in metres
             fillColor: '#AA0000'
+        });
         circle.bindTo('center', marker, 'position');
         if (marker) {
             marker.setMap(null);
