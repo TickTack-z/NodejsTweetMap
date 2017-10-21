@@ -4,7 +4,7 @@ Used Twitter Streaming API to fetch tweets from the twitter hose in real-time. C
 
 Used AWS ElasticSearch to store the tweets on the back-end.
 
-Created a web UI that allows users to search for a few keywords (via a dropdown). Used Google Maps API  (Links to an external site.)Links to an external site.(or any other mapping library) to render these filtered tweets in the map in whatever manner you want.
+Created a web UI that allows users to search for a few keywords (via a dropdown). Used Google Maps API to render these filtered tweets in the map in whatever manner you want.
 
 Deployed your application on AWS Elastic Beanstalk. Links to an external site in an auto-scaling environment.
 Used ElasticSearch’s geospatial feature that shows tweets that are within a certain distance from the point the user clicks on the map. 
