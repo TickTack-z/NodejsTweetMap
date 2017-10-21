@@ -8,3 +8,5 @@ Created a web UI that allows users to search for a few keywords (via a dropdown)
 
 Deployed your application on AWS Elastic Beanstalk. Links to an external site in an auto-scaling environment.
 Used ElasticSearch’s geospatial feature that shows tweets that are within a certain distance from the point the user clicks on the map. 
+
+URL: node-express-env.rdb96apiu4.us-east-1.elasticbeanstalk.com
