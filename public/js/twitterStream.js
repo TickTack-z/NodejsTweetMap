@@ -1,5 +1,4 @@
 function initialize() {
-    //Setup Google Map
     var myLatlng = new google.maps.LatLng(37.090, -95.712);
     var light_grey_style = [{
         "featureType": "landscape",
@@ -41,7 +40,10 @@ function initialize() {
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-    var marker, circle;
+    var marker, circle, point_loc;
+    markers_inst_list = [];
+    var infoWindow = new google.maps.InfoWindow(),
+        i;
 
     function addCircle(location) {
         if (marker) {
@@ -50,41 +52,19 @@ function initialize() {
         if (circle) {
             circle.setMap(null);
         }
+        point_loc=location;
         marker = new google.maps.Marker({
             position: location,
             map: map
         });
         circle = new google.maps.Circle({
             map: map,
-            radius: 160930 * 5,    // 1000 miles in metres
+            radius: 160930 *1.3,    // 1000 miles in metres
             fillColor: '#AA0000'
-        });
         circle.bindTo('center', marker, 'position');
         if (marker) {
             marker.setMap(null);
         }
-    }
-
-    markers_inst_list = [];
-    var markers = [['London Eye, London', 51.503454, -0.119562], ['Palace of Westminster, London', 51.499633, -0.124755]];
-    var infoWindow = new google.maps.InfoWindow(),
-        i;
-
-    for (i = 0; i < markers.length; i++) {
-        var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
-        markers_inst_list.push(new google.maps.Marker({
-            position: position,
-            map: map,
-            title: markers[i][0]
-        }));
-
-        // Allow each marker to have an info window
-        google.maps.event.addListener(markers_inst_list[i], 'click', (function (marker, i) {
-            return function () {
-                infoWindow.setContent(markers[i][0]);
-                infoWindow.open(map, marker);
-            }
-        })(markers_inst_list[i], i));
     }
 
     document.getElementById("button").addEventListener("click", function () {
@@ -140,22 +120,18 @@ function initialize() {
                     }
                 })(markers_inst_list[j], j));
             }
-
-
-            setTimeout(function () {
-                marker.setMap(null);
-            }, 600);
         });
         setInterval(function () {
             if (circle){
                 //code here
+                socket.emit("distance", point_loc);
             }
             else {
                 //code here
+                var e=document.getElementById("selectpicker");
+                socket.emit('clicked',e.value);
             }
-
         },3000);
-
     }
 }
 
