@@ -79,6 +79,7 @@ function initialize() {
         document.getElementById("button").addEventListener("click", function () {
             if (circle) {
                 circle.setMap(null);
+                circle=(function () { return; })();
             }
             if (pointLatLng){
                 pointLatLng=(function () { return; })();

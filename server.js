@@ -30,7 +30,7 @@ io.sockets.on('connection', function (socket) {
         //get the key_word value
 
         //request ES result
-        var url = 'https://search-map-7uq7g47ycnptvveydkyp4lsuca.us-east-1.es.amazonaws.com/tweet/_search?size=3000&q=text:' + key_word + '&pretty';
+        var url = 'someURL/tweet/_search?size=3000&q=text:' + key_word + '&pretty';
         request(url, function (error, response, body) {
             console.log('error:', error); // Print the error if one occurred
             console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
         var datas = [];
         var elasticsearch = require('elasticsearch');
         var client = new elasticsearch.Client({
-            host: 'https://search-map-7uq7g47ycnptvveydkyp4lsuca.us-east-1.es.amazonaws.com',
+            host: 'someURL',
             log: 'trace'
         });
 
